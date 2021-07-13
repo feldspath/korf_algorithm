@@ -35,3 +35,20 @@ void EdgeConfiguration::update_orientation(unsigned short indices) {
 bool EdgeConfiguration::eq(const EdgeConfiguration& other) const {
     return pieces == other.pieces;
 }
+
+unsigned int EdgeConfiguration::hash() const {
+    std::vector<unsigned char> values(12);
+    for (size_t i = 0; i < values.size(); ++i) {
+        values[i] = get_piece_value(pieces, i);
+    }
+    int position_hash = 0;
+    int fact = 1;
+    for (size_t i = 1; i < values.size(); ++i) {
+        fact *= i;
+        position_hash += fact * order_index(values, i);
+    }
+
+    int rotation_hash = pieces >> 48;
+
+    return rotation_hash * fact * values.size() + position_hash;
+}

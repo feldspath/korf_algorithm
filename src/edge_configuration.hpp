@@ -10,4 +10,5 @@ public:
     void make_move(unsigned char move);
     void update_orientation(unsigned short indices);
     bool eq(const EdgeConfiguration& other) const;
+    unsigned int hash() const;
 };

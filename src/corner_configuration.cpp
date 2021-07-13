@@ -1,4 +1,5 @@
 #include <vector>
+#include <iostream>
 
 #include "corner_configuration.hpp"
 
@@ -21,9 +22,9 @@ void CornerConfiguration::make_move(unsigned char move) {
     permut_pieces(indices, direction);
 }
 
-inline unsigned long increment_corner_rotation(unsigned long corners, unsigned short index, char increment) {
+inline unsigned long increment_corner_rotation(unsigned long corners, unsigned char index, char increment) {
     int bit_position = 48 + index * 2;
-    short value = (corners >> bit_position) & 3;
+    char value = (corners >> bit_position) & 3;
     unsigned long new_value = (value + 3 + increment) % 3;
     unsigned long mask = ~(3UL << bit_position);
     return (corners & mask) | (new_value << bit_position);
@@ -43,4 +44,26 @@ void CornerConfiguration::update_orientation(unsigned short indices) {
 
 bool CornerConfiguration::eq(const CornerConfiguration& other) const {
     return pieces == other.pieces;
+}
+
+unsigned int CornerConfiguration::hash() const {
+    std::vector<unsigned char> values(8);
+    for (size_t i = 0; i < values.size(); ++i) {
+        values[i] = get_piece_value(pieces, i);
+    }
+    int position_hash = 0;
+    int fact = 1;
+    for (size_t i = 1; i < values.size(); ++i) {
+        fact *= i;
+        position_hash += fact * order_index(values, i);
+    } 
+
+    int rotation_hash = 0;
+    int power = 1;
+    for (size_t i = 0; i < values.size()-1; ++i) {
+        rotation_hash += power * ((pieces >> (48 + i * 2)) & 3);
+        power *= 3;
+    }
+
+    return rotation_hash * fact * values.size() + position_hash;
 }

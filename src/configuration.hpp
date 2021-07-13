@@ -28,6 +28,12 @@ public:
 };
 
 bool operator==(const Configuration& a, const Configuration& b);
+bool operator>(const Configuration& a, const Configuration& b);
 
 bool is_same_face(const unsigned char& current, const unsigned char& previous);
 bool is_opposite_face(const unsigned char& current, const unsigned char& previous);
+
+unsigned char parse_move(std::string str);
+std::string read_move(unsigned char move);
+
+void initialize_move_counts_vectors();

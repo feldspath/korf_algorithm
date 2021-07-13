@@ -33,3 +33,14 @@ inline unsigned long set_piece_value(unsigned long pieces, int index, unsigned i
     unsigned long clear_mask = ~(0xFUL << index * 4);
     return (pieces & clear_mask) | ((value & 0xFUL) << index * 4);
 }
+
+inline int order_index(const std::vector<unsigned char>& values, size_t array_index) {
+    int val = values[array_index];
+    int count = 0;
+    for (size_t i = 0; i < array_index; ++i) {
+        if (values[i] > val) {
+            count++;
+        }
+    }
+    return count;
+}
